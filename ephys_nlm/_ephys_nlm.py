@@ -1,6 +1,6 @@
 """Core routines for ephys_nlm
 
-Authors: Jeremy Magland
+Authors: Jeremy Magland, Center for Computational Mathematics, Flatiron Institute
 
 Created January 2019
 """

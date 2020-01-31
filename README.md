@@ -1,19 +1,19 @@
 # ephys_nlm
 
-**----------- Under development -----------**
-
 Non-local means denoising of multi-channel electrophysiology timeseries using PyTorch.
+
+The software is in the alpha stage of development. Testers and contributers are welcome to assist.
 
 ## Prerequisites
 
-* Python (tested on v3.6)
-* PyTorch (tested on v1.0.0)
-* CUDA - if using GPU (recommended) 
-* MKL - if not using GPU
+* Python (tested on 3.6 and 3.7)
+* [PyTorch](https://pytorch.org/) (tested on v1.0.0)
+* [CUDA toolkit](https://developer.nvidia.com/cuda-downloads) - if using GPU (recommended) 
+* [MKL](https://software.intel.com/en-us/mkl) - if using CPU instead of CUDA
 
 To test whether PyTorch and CUDA are set up properly, run the following in ipython:
 
-```
+```python
 import torch
 if torch.cuda.is_available():
     print('CUDA is available for PyTorch!')
@@ -23,42 +23,77 @@ else:
 
 **Recommended**
 
-* spikeinterface -- `pip install spikeinterface`
-* spikeforest2
+* [SpikeInterface](https://github.com/spikeinterface) -- `pip install spikeinterface`
+* [SpikeForest](https://github.com/flatironinstitute/spikeforest2)
 
 ## Install from source
 
 For now, install in development mode. After cloning this repository:
 
-```
+```bash
 cd ephys_nlm
 pip install -e .
 ```
 
 Then in subsequent updates:
 
-```
+```bash
 git pull
 pip install -e .
 ```
 
 # Example
 
+The following is taken from a notebook in the [examples/](examples/) directory. It generates a short synthetic recording and denoise it.
+
 ```python
+from ephys_nlm import ephys_nlm_v1, ephys_nlm_v1_opts
+
 import spikeextractors as se
-from ephys_nlm import ephys_nlm, ephys_nlm_opts
+import spikewidgets as sw
+import matplotlib.pyplot as plt
 
 # Create a synthetic recording for purposes of demo
-recording, sorting_true = se.example_datasets.toy_example()
+recording, sorting_true = se.example_datasets.toy_example(duration=30, num_channels=4, K=20, seed=4)
 
-opts = ephys_nlm_opts(
-    multi_neighborhood=False, # All channels in one neighborhood
-    block_size=recording.get_sampling_frequency() * 30, # Size of denoising blocks (num. timepoints)
-    clip_size=30, # Size of clip size for denoising (num. timepoints)
-    sigma='auto', # Auto determine noise level
-    whitening='auto', # Auto compute whitening matrix based on data
-    denom_threshold=30 # Higher values => slower but more accurate
+# Specify the denoising options
+opts = ephys_nlm_v1_opts(
+    multi_neighborhood=False, # False means all channels will be denoised in one neighborhood
+    block_size_sec=30, # Size of block in seconds -- each block is denoised separately
+    clip_size=30, # Size of a clip (aka snippet) in timepoints
+    sigma='auto', # Auto compute the noise level
+    sigma_scale_factor=1, # Scale factor for auto-computed noise level
+    whitening='auto', # Auto compute the whitening matrix
+    whitening_pctvar=90, # Percent of variance to retain - controls number of SVD components to keep
+    denom_threshold=30 # Higher values lead to a slower but more accurate calculation.
 )
-recording_denoised = ephys_nlm(recording=recording, opts=opts)
 
+# Do the denoising
+recording_denoised, runtim_info = ephys_nlm_v1(
+    recording=recording,
+    opts=opts,
+    device='cpu', # cuda is recommended for non-demo situations
+    verbose=1
+)
 ```
+
+Also included in the notebook is SpikeInterface code used to view the original and denoised timeseries:
+
+```python
+# View the original and denoised timeseries
+
+plt.figure(figsize=(16,5))
+sw.TimeseriesWidget(recording=recording, trange=(0, 0.2), ax=plt.gca()).plot();
+
+plt.figure(figsize=(16,5))
+sw.TimeseriesWidget(recording=recording_denoised, trange=(0, 0.2), ax=plt.gca()).plot();
+```
+
+This should produce output similar to the following:
+
+![screenshot1](doc/screenshot1.png)
+
+## Authors
+
+Jeremy Magland
+Center for Computational Mathematics, Flatiron Institute

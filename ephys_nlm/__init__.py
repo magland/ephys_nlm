@@ -2,7 +2,7 @@
 
 Non-local means denoising of multi-channel electrophysiology timeseries using PyTorch.
 
-Authors: Jeremy Magland
+Authors: Jeremy Magland, Center for Computational Mathematics, Flatiron Institute
 
 Created January 2019
 """

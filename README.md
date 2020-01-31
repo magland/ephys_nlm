@@ -110,5 +110,4 @@ This should produce output similar to the following:
 
 ## Authors
 
-Jeremy Magland
-Center for Computational Mathematics, Flatiron Institute
+Jeremy Magland, Center for Computational Mathematics, Flatiron Institute

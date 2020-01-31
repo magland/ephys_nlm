@@ -4,6 +4,21 @@ Non-local means denoising of multi-channel electrophysiology timeseries using Py
 
 The software is in the alpha stage of development. Testers and contributers are welcome to assist.
 
+## About
+
+Electrophysiology recordings contain spike waveforms
+superimposed on a noisy background signal. Because a single neuron may fire
+hundreds or even thousands of times within the duration of the recording
+producing a very similar voltage trace at each firing, it should be possible
+to use this redundancy to denoise the recording in a preprocessing step.
+Our approach is to use non-local means to suppress the noisy signal while
+retaining the part of the signal that repeats.
+
+Non-local means is a denoising algorithm that has primarily been used for
+2d images, but it can also be adapted for use with 1d signals.
+
+TODO: finish writing this section
+
 ## Prerequisites
 
 * Python (tested on 3.6 and 3.7)

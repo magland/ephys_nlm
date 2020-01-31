@@ -11,6 +11,16 @@ Non-local means denoising of multi-channel electrophysiology timeseries using Py
 * CUDA - if using GPU (recommended) 
 * MKL - if not using GPU
 
+To test whether PyTorch and CUDA are set up properly, run the following in ipython:
+
+```
+import torch
+if torch.cuda.is_available():
+    print('CUDA is available for PyTorch!')
+else:
+    print('CUDA is NOT available for PyTorch.')
+```
+
 **Recommended**
 
 * spikeinterface -- `pip install spikeinterface`
@@ -46,7 +56,7 @@ opts = ephys_nlm_opts(
     block_size=recording.get_sampling_frequency() * 30, # Size of denoising blocks (num. timepoints)
     clip_size=30, # Size of clip size for denoising (num. timepoints)
     sigma='auto', # Auto determine noise level
-    whitening_matrix='auto', # Auto compute whitening matrix based on data
+    whitening='auto', # Auto compute whitening matrix based on data
     denom_threshold=30 # Higher values => slower but more accurate
 )
 recording_denoised = ephys_nlm(recording=recording, opts=opts)

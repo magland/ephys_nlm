@@ -48,7 +48,7 @@ where
 
 <p align="center"><img src="/tex/0c3aed180c746b72ec925b5fb6942a7f.svg?invert_in_darkmode&sanitize=true" align=middle width=160.39414545pt height=18.7598829pt/></p>
 
-is the singular-value decomposition of the <img src="/tex/67b4fdd3319785612314e934a155112e.svg?invert_in_darkmode&sanitize=true" align=middle width=109.48612455pt height=24.65753399999998pt/> matrix of all clips
+is the singular-value decomposition of the <img src="/tex/5ff1317d238d952d2ddaeba5c8003f9b.svg?invert_in_darkmode&sanitize=true" align=middle width=137.79652589999998pt height=24.65753399999998pt/> matrix of all clips
 and <img src="/tex/8ada1523ea4dcac0e4cf320e9e54b672.svg?invert_in_darkmode&sanitize=true" align=middle width=25.461263849999987pt height=22.465723500000017pt/> is the rank-K diagonal matrix that picks out the top <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/> singular
 vectors. Here, <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/> is chosen to capture a user-specified percentage of the total
 variance in the recording. The noise level <img src="/tex/8cda31ed38c6d59d14ebefa440099572.svg?invert_in_darkmode&sanitize=true" align=middle width=9.98290094999999pt height=14.15524440000002pt/> is also empirically
@@ -58,7 +58,7 @@ scaling factor for adjusting <img src="/tex/8cda31ed38c6d59d14ebefa440099572.svg
 
 As a practical matter, we need to be able to perform the above denoising
 procedure within a reasonable timeframe relative to other processing steps.
-We use the following strategies to speed up the computation.
+Below we discuss several strategies we use to speed up the computation.
 
 ### Denoising in time blocks
 
@@ -72,7 +72,44 @@ block duration and computational efficiency.
 
 ### Adaptive subsampling
 
-TODO
+The time-consuming part of the non-local means formula is the summation over all
+<img src="/tex/0b7a5a5269a5ccb317f84ddae5058d9c.svg?invert_in_darkmode&sanitize=true" align=middle width=80.87312969999998pt height=22.465723500000017pt/> clips in the time block of size <img src="/tex/7acf3dadc6a35fc888add78e53dc6861.svg?invert_in_darkmode&sanitize=true" align=middle width=19.760314199999993pt height=22.465723500000017pt/>. Fortunately, the weighted
+average can be viewed as a statistical procedure which may be substantially sped
+up using strategic subsampling. Because firing events are usually sparse, the
+majority of clips <img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/> are close to the backround noise and therefore have a
+very large number of nearby neighbors <img src="/tex/5db0aab2d6e54e70d087c4b6ae005a7a.svg?invert_in_darkmode&sanitize=true" align=middle width=15.514781699999991pt height=14.15524440000002pt/> such that <img src="/tex/c8879850e26439fbbb536d113dda8587.svg?invert_in_darkmode&sanitize=true" align=middle width=63.533307749999985pt height=24.65753399999998pt/> is close to
+the maximum of <img src="/tex/034d0a6be0424bffe9a6e7ac9236c0f5.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/>. For these cases it is acceptable to perform vast
+subsampling, perhaps summing over only a couple hundred randomly-selected clips.
+On the other extreme, some clips <img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/> may include spikes that are relatively
+rare, and thus there will be a small number of source clips that contribute anything
+substantial to the sum.
+
+While algorithms such as clustering or k-nearest neighbors could be used to more intelligently sample, we would like to avoid these types of methods in this
+preprocessing step. We view clustering and classification as part of the spike
+sorting step, and not this denoising operation which seeks only to isolate the
+signal from the noise.
+
+The procedure we use for adaptive subsampling involves computing the summation
+in batches and selectively dropping out clips from both the sources (<img src="/tex/5db0aab2d6e54e70d087c4b6ae005a7a.svg?invert_in_darkmode&sanitize=true" align=middle width=15.514781699999991pt height=14.15524440000002pt/>) and
+the targets (<img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/>) between each batch. In the first batch we compute
+<img src="/tex/3e6cdda6bcbb97258f8f836fe15c3f46.svg?invert_in_darkmode&sanitize=true" align=middle width=76.19306144999999pt height=24.65753399999998pt/> for all <img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/>'s and a small subset of the <img src="/tex/36b5afebdba34564d884d347484ac0c7.svg?invert_in_darkmode&sanitize=true" align=middle width=7.710416999999989pt height=21.68300969999999pt/>'s and seperately
+accumulate both the numerator <img src="/tex/70c1c0684cd2c896667c058061245354.svg?invert_in_darkmode&sanitize=true" align=middle width=104.61219779999999pt height=24.657735299999988pt/> and the denominator
+<img src="/tex/c507c62694721a6c00a2a9126404d569.svg?invert_in_darkmode&sanitize=true" align=middle width=89.09741609999999pt height=24.657735299999988pt/>. We then use the size of the denominator as a criteria for
+determining which clips to exclude from the subsequent batches, the idea being
+that a large denominator means that a large number of nearby neighbors have
+already contributed to the weighted average. The user sets a threshold (e.g.,
+30) for dropping out clips in this way.
+
+In addition to dropping out target clips from the computation, it is crucial to
+also drop out source clips. A large denominator for a target clip means that it
+must have a relatively large...
+
+
+### Combining overlapping clips
+
+### Overlapping spikes and other rare events
+
+### Handling large channel arrays
 
 ### GPU processing
 

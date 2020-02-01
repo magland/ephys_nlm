@@ -7,7 +7,7 @@ setuptools.setup(
     version="0.1.0",
     author="Jeremy Magland",
     author_email="jmagland@flatironinstitute.org",
-    description="Non-local means denoising of multi-channel electrophysiology timeseries using PyTorch.",
+    description="Non-local means denoising of multi-channel electrophysiology timeseries.",
     packages=setuptools.find_packages(),
     scripts=[],
     install_requires=[

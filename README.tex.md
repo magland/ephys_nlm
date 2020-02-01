@@ -48,7 +48,7 @@ where
 
 $$USV^T = [u_1 ... u_{N-T}]^T$$
 
-is the singular-value decomposition of the $(N-T) \times MT$ matrix of all clips
+is the singular-value decomposition of the $(N-T+1) \times MT$ matrix of all clips
 and $D_K$ is the rank-K diagonal matrix that picks out the top $K$ singular
 vectors. Here, $K$ is chosen to capture a user-specified percentage of the total
 variance in the recording. The noise level $\sigma$ is also empirically
@@ -58,7 +58,7 @@ scaling factor for adjusting $\sigma$.
 
 As a practical matter, we need to be able to perform the above denoising
 procedure within a reasonable timeframe relative to other processing steps.
-We use the following strategies to speed up the computation.
+Below we discuss several strategies we use to speed up the computation.
 
 ### Denoising in time blocks
 
@@ -72,7 +72,44 @@ block duration and computational efficiency.
 
 ### Adaptive subsampling
 
-TODO
+The time-consuming part of the non-local means formula is the summation over all
+$N_0-T+1$ clips in the time block of size $N_0$. Fortunately, the weighted
+average can be viewed as a statistical procedure which may be substantially sped
+up using strategic subsampling. Because firing events are usually sparse, the
+majority of clips $v_i$ are close to the backround noise and therefore have a
+very large number of nearby neighbors $u_j$ such that $w(u_j, v_j)$ is close to
+the maximum of $1$. For these cases it is acceptable to perform vast
+subsampling, perhaps summing over only a couple hundred randomly-selected clips.
+On the other extreme, some clips $v_i$ may include spikes that are relatively
+rare, and thus there will be a small number of source clips that contribute anything
+substantial to the sum.
+
+While algorithms such as clustering or k-nearest neighbors could be used to more intelligently sample, we would like to avoid these types of methods in this
+preprocessing step. We view clustering and classification as part of the spike
+sorting step, and not this denoising operation which seeks only to isolate the
+signal from the noise.
+
+The procedure we use for adaptive subsampling involves computing the summation
+in batches and selectively dropping out clips from both the sources ($u_j$) and
+the targets ($v_i$) between each batch. In the first batch we compute
+$\|v_i-u_j\|_A$ for all $v_i$'s and a small subset of the $j$'s and seperately
+accumulate both the numerator $\sum_j w(v_i, u_j)u_j$ and the denominator
+$\sum_j w(v_i, u_j)$. We then use the size of the denominator as a criteria for
+determining which clips to exclude from the subsequent batches, the idea being
+that a large denominator means that a large number of nearby neighbors have
+already contributed to the weighted average. The user sets a threshold (e.g.,
+30) for dropping out clips in this way.
+
+In addition to dropping out target clips from the computation, it is crucial to
+also drop out source clips. A large denominator for a target clip means that it
+must have a relatively large...
+
+
+### Combining overlapping clips
+
+### Overlapping spikes and other rare events
+
+### Handling large channel arrays
 
 ### GPU processing
 

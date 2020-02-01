@@ -94,7 +94,7 @@ in batches and selectively dropping out clips from both the sources ($u_j$) and
 the targets ($v_i$) between each batch. In the first batch we compute
 $\|v_i-u_j\|_A$ for all $v_i$'s and a small subset of the $j$'s and seperately
 accumulate both the numerator $\sum_j w(v_i, u_j)u_j$ and the denominator
-$\sum_j w(v_i, u_j)$. We then use the size of the denominator as a criteria for
+$\sum_j w(v_i, u_j)$. We then use the size of the denominator as a criterion for
 determining which clips to exclude from the subsequent batches, the idea being
 that a large denominator means that a large number of nearby neighbors have
 already contributed to the weighted average. The user sets a threshold (e.g.,
@@ -102,25 +102,48 @@ already contributed to the weighted average. The user sets a threshold (e.g.,
 
 In addition to dropping out target clips from the computation, it is crucial to
 also drop out source clips. A large denominator for a target clip means that it
-must have a relatively large...
+must have a relatively large number of nearby neighbors. Therefore, the source
+clips that are overlapping (in time) to such a target clip would presumably also
+have a large number of neighbors, and in fact all of its nearby neighbors would
+be expected to have a large number of nearby neighbors. Thus it should be safe
+to drop out source clips as well based on the denominator criterion for the
+time-overlapping target clips.
 
+In summary, adaptive subsampling is achieved by computing the weighted sum by
+accumulating the numerators and denominators in batches, while dropping out both
+source and target clips based on the denominator threshold criterion.
 
 ### Combining overlapping clips
 
+Here we need to describe how we keep track of numerators and denominators for
+each target clip, how exactly we apply the denominator dropout criterion, and
+how to combine the values for time-overlapping clips.
+
 ### Overlapping spikes and other rare events
 
-### Handling large channel arrays
+The method of non-local means works well when the signal repeats many times
+throughout the time block. But when neural events overlap in time the resulting
+waveform is a superposition that will usually not match any other waveform.
+Even if the same two neurons fire simultaneously in multiple instances, the
+time offset between the two events is expected to be variable, thus producing
+a spectrum of different superpositioned waveforms. Overlapping spike events are
+thus expected to form isolated clips that have few if any nearby neighbors.
+
+While our method cannot be expected to denoise such events, we can expect the
+noisy signal of the superimposed waveforms to survive the denoising process.
+This is because only one source term (the clip itself) is expected to contribute
+substantially (always with a weight of $1$) to the average. Therefore, we
+expect that the denoised recording will retain overlapping or other rare events,
+but without denoising them.
+
+### Large channel arrays
+
+Describe the procedure for denoising in neighborhoods.
 
 ### GPU processing
 
-TODO
-
-
-
-
-
-
-TODO: finish writing this section
+Describe how we use PyTorch to efficiently compute the matrix-matrix
+multiplications needed in the above-described algorithm.
 
 ## Prerequisites
 

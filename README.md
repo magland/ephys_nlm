@@ -1,4 +1,4 @@
-https://travis-ci.org/magland/ephys_nlm.svg?branch=master
+[![Build Status](https://travis-ci.org/magland/ephys_nlm.svg?branch=master)](https://travis-ci.org/magland/ephys_nlm)
 
 # ephys_nlm
 

@@ -1,3 +1,5 @@
+https://travis-ci.org/magland/ephys_nlm.svg?branch=master
+
 # ephys_nlm
 
 Non-local means denoising of multi-channel electrophysiology timeseries using PyTorch.

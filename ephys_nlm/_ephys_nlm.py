@@ -160,7 +160,7 @@ def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, devi
 
     if device is None:
         device = os.getenv('EPHYS_NLM_DEVICE', None)
-        if device is None or device0 == '':
+        if device is None or device == '':
             print('Warning: EPHYS_NLM_DEVICE not set -- defaulting to cpu. To use GPU, set EPHYS_NLM_DEVICE=cuda')
             device = 'cpu'
     elif device == 'cpu':

@@ -10,7 +10,14 @@ class OutputRecordingExtractor(se.RecordingExtractor):
 
         self._blocks = []
 
-    def add_block(self, traces):
+    def add_block(self, traces: np.ndarray):
+        """Add a block of output traces
+
+        Parameters
+        ----------
+        traces : np.ndarray
+            The block of output traces
+        """
         if traces.shape[1] == self._block_size:
             self._blocks.append(traces)
         else:
@@ -26,12 +33,18 @@ class OutputRecordingExtractor(se.RecordingExtractor):
                 self._blocks.append(traces)
 
     def get_channel_ids(self):
+        """Return the channel ids
+        """
         return self._base_recording.get_channel_ids()
 
     def get_num_frames(self):
+        """Return number of frames in the recording
+        """
         return self._base_recording.get_num_frames()
 
     def get_sampling_frequency(self):
+        """Return sampling frequency
+        """
         return self._base_recording.get_sampling_frequency()
 
     def get_traces(self, channel_ids=None, start_frame=None, end_frame=None):
@@ -71,3 +84,7 @@ class OutputRecordingExtractor(se.RecordingExtractor):
                                                    :end_frame - ib2 * self._block_size]
             )
         return np.concatenate(trace_blocks, axis=1)
+
+    @staticmethod
+    def write_recording(recording, save_path):
+        raise Exception('write_recording not implemented for this recording extractor')

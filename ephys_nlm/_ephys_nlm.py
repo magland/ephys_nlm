@@ -269,7 +269,7 @@ def _estimate_sigma_and_whitening_in_neighborhood(*, traces: np.ndarray, opts: E
         print('Estimating whitening matrix...')
 
     # M x N
-    traces_t = torch.from_numpy(traces).to(device)
+    traces_t: torch.tensor = torch.from_numpy(traces).to(device)
     # L x M x T
     clips_t = extract_clips_t(
         traces_t, t_start=0, T_delta=T_delta, T=T, num_clips=L)

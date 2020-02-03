@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/magland/ephys_nlm.svg?branch=master)](https://travis-ci.org/magland/ephys_nlm)
-[![codecov](https://codecov.io/gh/ephys_nlm/ephys_nlm/branch/master/graph/badge.svg)](https://codecov.io/gh/ephys_nlm/ephys_nlm)
+[![codecov](https://codecov.io/gh/magland/ephys_nlm/branch/master/graph/badge.svg)](https://codecov.io/gh/magland/ephys_nlm)
 
 # ephys_nlm
 

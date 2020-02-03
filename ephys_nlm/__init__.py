@@ -8,3 +8,5 @@ Created January 2019
 """
 
 from ._ephys_nlm import ephys_nlm_v1, ephys_nlm_v1_opts
+
+from . import example_datasets

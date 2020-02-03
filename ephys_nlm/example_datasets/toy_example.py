@@ -1,5 +1,5 @@
-import spikeextractors as se
 import numpy as np
+import spikeextractors as se
 from .synthesize_random_waveforms import synthesize_random_waveforms
 from .synthesize_random_firings import synthesize_random_firings
 from .synthesize_timeseries import synthesize_timeseries

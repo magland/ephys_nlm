@@ -7,13 +7,14 @@ def exp_growth(amp1, amp2, dur1, dur2):
     # Want Y[0]=amp1
     # Want Y[-1]=amp2
     Y = Y / (Y[-1] - Y[0]) * (amp2 - amp1)
-    Y = Y - Y[0] + amp1;
+    Y = Y - Y[0] + amp1
     return Y
 
 
 def exp_decay(amp1, amp2, dur1, dur2):
     Y = exp_growth(amp2, amp1, dur1, dur2)
-    Y = np.flipud(Y)  # used to be flip, but that was not supported by older versions of numpy
+    # used to be flip, but that was not supported by older versions of numpy
+    Y = np.flipud(Y)
     return Y
 
 
@@ -26,22 +27,21 @@ def smooth_it(Y, t):
 
 def synthesize_single_waveform(*, N=800, durations=[200, 10, 30, 200], amps=[0.5, 10, -1, 0]):
     durations = np.array(durations).ravel()
-    if (np.sum(durations) >= N - 2):
+    if np.sum(durations) >= N - 2:
         durations[-1] = N - 2 - np.sum(durations[0:durations.size - 1])
 
     amps = np.array(amps).ravel()
 
-    timepoints = np.round(np.hstack((0, np.cumsum(durations) - 1))).astype('int');
+    timepoints = np.round(
+        np.hstack((0, np.cumsum(durations) - 1))).astype('int')
 
     t = np.r_[0:np.sum(durations) + 1]
 
     Y = np.zeros(len(t))
     Y[timepoints[0]:timepoints[1] + 1] = exp_growth(0, amps[0], timepoints[1] + 1 - timepoints[0], durations[0] / 4)
     Y[timepoints[1]:timepoints[2] + 1] = exp_growth(amps[0], amps[1], timepoints[2] + 1 - timepoints[1], durations[1])
-    Y[timepoints[2]:timepoints[3] + 1] = exp_decay(amps[1], amps[2], timepoints[3] + 1 - timepoints[2],
-                                                   durations[2] / 4)
-    Y[timepoints[3]:timepoints[4] + 1] = exp_decay(amps[2], amps[3], timepoints[4] + 1 - timepoints[3],
-                                                   durations[3] / 5)
+    Y[timepoints[2]:timepoints[3] + 1] = exp_decay(amps[1], amps[2], timepoints[3] + 1 - timepoints[2], durations[2] / 4)
+    Y[timepoints[3]:timepoints[4] + 1] = exp_decay(amps[2], amps[3], timepoints[4] + 1 - timepoints[3], durations[3] / 5)
     Y = smooth_it(Y, 3)
     Y = Y - np.linspace(Y[0], Y[-1], len(t))
     Y = np.hstack((Y, np.zeros(N - len(t))))
@@ -91,7 +91,7 @@ def synthesize_single_waveform(*, N=800, durations=[200, 10, 30, 200], amps=[0.5
 # end
 
 if __name__ == '__main__':
-    Y = synthesize_single_waveform()
+    Y0 = synthesize_single_waveform()
     import matplotlib.pyplot as plt
 
-    plt.plot(Y)
+    plt.plot(Y0)

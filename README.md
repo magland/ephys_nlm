@@ -94,7 +94,7 @@ in batches and selectively dropping out clips from both the sources (<img src="/
 the targets (<img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/>) between each batch. In the first batch we compute
 <img src="/tex/3e6cdda6bcbb97258f8f836fe15c3f46.svg?invert_in_darkmode&sanitize=true" align=middle width=76.19306144999999pt height=24.65753399999998pt/> for all <img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/>'s and a small subset of the <img src="/tex/36b5afebdba34564d884d347484ac0c7.svg?invert_in_darkmode&sanitize=true" align=middle width=7.710416999999989pt height=21.68300969999999pt/>'s and seperately
 accumulate both the numerator <img src="/tex/70c1c0684cd2c896667c058061245354.svg?invert_in_darkmode&sanitize=true" align=middle width=104.61219779999999pt height=24.657735299999988pt/> and the denominator
-<img src="/tex/c507c62694721a6c00a2a9126404d569.svg?invert_in_darkmode&sanitize=true" align=middle width=89.09741609999999pt height=24.657735299999988pt/>. We then use the size of the denominator as a criteria for
+<img src="/tex/c507c62694721a6c00a2a9126404d569.svg?invert_in_darkmode&sanitize=true" align=middle width=89.09741609999999pt height=24.657735299999988pt/>. We then use the size of the denominator as a criterion for
 determining which clips to exclude from the subsequent batches, the idea being
 that a large denominator means that a large number of nearby neighbors have
 already contributed to the weighted average. The user sets a threshold (e.g.,
@@ -102,25 +102,48 @@ already contributed to the weighted average. The user sets a threshold (e.g.,
 
 In addition to dropping out target clips from the computation, it is crucial to
 also drop out source clips. A large denominator for a target clip means that it
-must have a relatively large...
+must have a relatively large number of nearby neighbors. Therefore, the source
+clips that are overlapping (in time) to such a target clip would presumably also
+have a large number of neighbors, and in fact all of its nearby neighbors would
+be expected to have a large number of nearby neighbors. Thus it should be safe
+to drop out source clips as well based on the denominator criterion for the
+time-overlapping target clips.
 
+In summary, adaptive subsampling is achieved by computing the weighted sum by
+accumulating the numerators and denominators in batches, while dropping out both
+source and target clips based on the denominator threshold criterion.
 
 ### Combining overlapping clips
 
+Here we need to describe how we keep track of numerators and denominators for
+each target clip, how exactly we apply the denominator dropout criterion, and
+how to combine the values for time-overlapping clips.
+
 ### Overlapping spikes and other rare events
 
-### Handling large channel arrays
+The method of non-local means works well when the signal repeats many times
+throughout the time block. But when neural events overlap in time the resulting
+waveform is a superposition that will usually not match any other waveform.
+Even if the same two neurons fire simultaneously in multiple instances, the
+time offset between the two events is expected to be variable, thus producing
+a spectrum of different superpositioned waveforms. Overlapping spike events are
+thus expected to form isolated clips that have few if any nearby neighbors.
+
+While our method cannot be expected to denoise such events, we can expect the
+noisy signal of the superimposed waveforms to survive the denoising process.
+This is because only one source term (the clip itself) is expected to contribute
+substantially (always with a weight of <img src="/tex/034d0a6be0424bffe9a6e7ac9236c0f5.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/>) to the average. Therefore, we
+expect that the denoised recording will retain overlapping or other rare events,
+but without denoising them.
+
+### Large channel arrays
+
+Describe the procedure for denoising in neighborhoods.
 
 ### GPU processing
 
-TODO
-
-
-
-
-
-
-TODO: finish writing this section
+Describe how we use PyTorch to efficiently compute the matrix-matrix
+multiplications needed in the above-described algorithm.
 
 ## Prerequisites
 

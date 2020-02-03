@@ -395,6 +395,9 @@ def _denoise_neighborhood(*, traces: np.ndarray, opts: EphysNlmV1Opts, sigma: fl
     device = opts._device
     denom_threshold = opts.denom_threshold
 
+    if verbose >= 2:
+        print(f'Denoising neighborhood ({M} x {N})')
+
     info = EphysNlmV1NeighborhoodInfo()
 
     traces_t = torch.zeros((M, N2), dtype=torch.float32, device=device)

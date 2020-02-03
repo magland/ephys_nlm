@@ -1,20 +1,21 @@
 language: python
 python:
-  - "3.6"
-# node_js:
-#  - "10"
-
+- '3.6'
 install:
-  - pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
-  - pip install pytest pytest-cov
-  - pip install pylint
-  - pip install matplotlib # Only needed for linting
-  # - npm install -g pyright
-  - pip install -e .
-
+- pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
+- pip install pytest pytest-cov
+- pip install pylint
+- pip install matplotlib
+- pip install -e .
 script:
-  # - pyright ephys_nlm
-  - pylint ephys_nlm
-  - EPHYS_NLM_DEVICE=cpu pytest --cov ephys_nlm --cov-report=xml:cov.xml -s
+- pylint ephys_nlm
+- EPHYS_NLM_DEVICE=cpu pytest --cov ephys_nlm --cov-report=xml:cov.xml -s
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -F travis
+- bash <(curl -s https://codecov.io/bash) -F travis
+deploy:
+  provider: pypi
+  user: magland
+  on:
+    tags: true
+  password:
+    secure: A5jglMhSxTPS5Ludk+Mb+kM+jL6KA5BChdErlTwxWUf/m9gf/XlFPTc3VjFgtidoaGkCISC8LSQmTwjZ7zBq7NPYK//V+t9oWpOvHVl49loSy6f2ZDZunaokfBQyRKZnZTnw8gbFTX+X5Htn5ApMpUzTEJtFzpJAxIsaJppgFX1TkAemc0Ef53dReXT5si0GLi3rA8DidIvxRMAhcjqO8QjZbajH2CS3aEG6MphMUjIJGtw+cQoouy4PQbmMAmuAFiKKOaSinN8XaLeXGMDjdWFrfNR2G3nQ6GzpK3e0MU6u1K/3FUKH4GTkKMmGNuZX180G016ym6T+WermWMlZFCyatTrIWYtUQBOlpxQZnnA9SKutLWHDift/LHnNr/840wOjtz+ykzEPyksjO5alzJNHBp4wLES1SBbvUzsvg6f1wUQYBdnTfHNfVCPuT+hkgSQoycQpvOv1HAxzpJ+O3A3yar5wNuHHcgC2RXcbzOwI5n5HmhwSvZQJLq7nZdbfDYZYUrlvnzd0EP+GYwaDjzgcbA5DXtY4BMP4/0PLV6JneOIDRhzwummgkWYFbEPuYbyi9OR+OWAwo37xaQ4U34d9Hee4sVYGwW5hXiyXGPIk0lz1CkqkWmMEhSQDS80bXToomxjHAC0+upsobQIBYH5J06xRT1LUS+TI6dxsHIM=

@@ -4,7 +4,7 @@ pkg_name = "ephys_nlm"
 
 setuptools.setup(
     name=pkg_name,
-    version="0.1.1",
+    version="0.1.2",
     author="Jeremy Magland",
     author_email="jmagland@flatironinstitute.org",
     description="Non-local means denoising of multi-channel electrophysiology timeseries.",

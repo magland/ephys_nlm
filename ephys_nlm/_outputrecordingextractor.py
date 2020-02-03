@@ -48,7 +48,7 @@ class OutputRecordingExtractor(se.RecordingExtractor):
             channel_indices.append(np.nonzero(np.array(aa) == ch)[0][0])
 
         ib1 = int(start_frame / self._block_size)
-        ib2 = int(end_frame / self._block_size)
+        ib2 = int((end_frame-1) / self._block_size)
 
         assert ib2 < len(self._blocks), f'Block {ib2} not found in OutputRecordingExtractor (num blocks is {len(self._blocks)})'
 

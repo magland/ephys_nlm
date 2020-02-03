@@ -1,3 +1,4 @@
+import os
 import numpy as np
 from ephys_nlm import ephys_nlm_v1, ephys_nlm_v1_opts
 
@@ -47,7 +48,7 @@ def test_1():
         recording_denoised, runtime_info = ephys_nlm_v1(
             recording=recording,
             opts=opts,
-            device='cpu', # cuda is recommended for non-demo situations
+            device=None, # detect from the EPHYS_NLM_DEVICE environment variable
             verbose=2
         )
         a = np.sum(recording_denoised.get_traces())

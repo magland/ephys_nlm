@@ -5,6 +5,7 @@ Authors: Jeremy Magland, Center for Computational Mathematics, Flatiron Institut
 Created January 2019
 """
 
+import os
 import time
 import math
 from typing import Tuple, List, Dict, Union, Any
@@ -116,7 +117,7 @@ class EphysNlmV1NeighborhoodInfo:
         pass
 
 
-def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, device: str, verbose: int = 1) -> Tuple[OutputRecordingExtractor, EphysNlmV1Info]:
+def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, device: Union[None, str], verbose: int = 1) -> Tuple[OutputRecordingExtractor, EphysNlmV1Info]:
     """Denoise an ephys recording using non-local means
 
     Parameters
@@ -157,10 +158,18 @@ def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, devi
     assert opts.sigma == 'auto', 'Only sigma=auto allowed at this time'
     assert opts.whitening == 'auto', 'Only whitening=auto allowed at this time'
 
+    if device is None:
+        device = os.getenv('EPHYS_NLM_DEVICE', None)
+        if device is None or device0 == '':
+            print('Warning: EPHYS_NLM_DEVICE not set -- defaulting to cpu. To use GPU, set EPHYS_NLM_DEVICE=cuda')
+            device = 'cpu'
+    elif device == 'cpu':
+        print('Using device=cpu. Warning: GPU is much faster. To use GPU, set device=cuda')
     if device == 'cuda':
+        assert torch.cuda.is_available(), f'Cannot use device=cuda. PyTorch/CUDA is not configured properly -- torch.cuda.is_available() is returning False.'
         print('Using device=cuda')
     elif device == 'cpu':
-        print('Using device=cpu. Warning: GPU is much faster. Recommendation: device=cuda')
+        print('Using device=cpu')
     else:
         raise Exception(f'Invalid device: {device}')
     opts._device = device  # for convenience

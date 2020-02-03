@@ -145,7 +145,6 @@ def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, devi
     info = EphysNlmV1Info()
     info.recording = recording
     info.opts = opts
-    info.device = device
     info.start_time = time.time()
     if opts.block_size is None:
         if opts.block_size_sec is None:
@@ -171,7 +170,8 @@ def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, devi
     elif device == 'cpu':
         print('Using device=cpu')
     else:
-        raise Exception(f'Invalid device: {device}')
+        raise Exception(f'Invalid device: {device}') # pragma: no cover
+    info.device = device
     opts._device = device  # for convenience
 
     neighborhoods = _get_neighborhoods(recording=recording, opts=opts)
@@ -321,9 +321,9 @@ def _estimate_sigma_and_whitening_in_neighborhood(*, traces: np.ndarray, opts: E
     sigma = np.median(vals)
     plot_hist = False
     if plot_hist:
-        import matplotlib.pyplot as plt
-        plt.figure()
-        plt.hist(vals, 100)
+        import matplotlib.pyplot as plt # pragma: no cover
+        plt.figure() # pragma: no cover
+        plt.hist(vals, 100) # pragma: no cover
     ###############################################################################################################
 
     return sigma, whitening_matrix
@@ -441,7 +441,7 @@ def _denoise_neighborhood(*, traces: np.ndarray, opts: EphysNlmV1Opts, sigma: fl
             Lsel = len(selected_inds_t)
             Lsel2 = len(selected_inds2_t)
             if Lsel == 0:
-                break
+                break # pragma: no cover
             if Lsel > 0 and Lsel2 > 0:
                 if verbose >= 3:
                     print(
@@ -593,11 +593,11 @@ def _denoise_clips_t_B(Xw_t: torch.tensor, Yw_t: torch.tensor, Y_t: torch.tensor
     distsqr0 = distsqr.reshape((L1*L2))
 
     if maxnum is not None and L2 > maxnum:
-        distsqr_sorted = torch.sort(distsqr, dim=1)[0]
-        cutoffs = distsqr_sorted[:, maxnum].reshape(L1, 1).repeat((1, L2))
-        cutoffs0 = cutoffs.reshape((L1*L2))
+        distsqr_sorted = torch.sort(distsqr, dim=1)[0] # pragma: no cover
+        cutoffs = distsqr_sorted[:, maxnum].reshape(L1, 1).repeat((1, L2)) # pragma: no cover
+        cutoffs0 = cutoffs.reshape((L1*L2)) # pragma: no cover
         # just needs to be greater than sigma^2
-        distsqr0[torch.nonzero(distsqr0 >= cutoffs0)] = sigma**2 + 1
+        distsqr0[torch.nonzero(distsqr0 >= cutoffs0)] = sigma**2 + 1 # pragma: no cover
 
     # L1*L2
     weights0 = torch.zeros((L1*L2), dtype=torch.float32, device=device)

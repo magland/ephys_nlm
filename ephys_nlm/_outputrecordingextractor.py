@@ -16,9 +16,9 @@ class OutputRecordingExtractor(se.RecordingExtractor):
         else:
             if traces.shape[1] >= self._block_size * 2:
                 raise Exception(
-                    'Unexpected error adding block to OutputRecordingExtractor.')
+                    'Unexpected error adding block to OutputRecordingExtractor.') # pragma: no cover
             if len(self._blocks) * self._block_size + traces.shape[1] != self.get_num_frames():
-                raise Exception(f'Problem adding final block. Unexpected size: {traces.shape[1]}. Block size is {self._block_size}. Number of frames is {self.get_num_frames()}.')
+                raise Exception(f'Problem adding final block. Unexpected size: {traces.shape[1]}. Block size is {self._block_size}. Number of frames is {self.get_num_frames()}.') # pragma: no cover
             if traces.shape[1] > self._block_size:
                 self._blocks.append(traces[:, :self._block_size])
                 self._blocks.append(traces[:, self._block_size:])

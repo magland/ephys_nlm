@@ -5,8 +5,10 @@ python:
 install:
   - pip install torch==1.4.0+cpu torchvision==0.5.0+cpu -f https://download.pytorch.org/whl/torch_stable.html
   - pip install numpy
-  - pip install pytest
+  - pip install pytest pytest-cov
   - pip install .
 
 script:
-  - EPHYS_NLM_DEVICE=cpu pytest
+  - EPHYS_NLM_DEVICE=cpu pytest --cov=ephys_nlm
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -F travis

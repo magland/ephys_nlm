@@ -170,18 +170,21 @@ else:
 * [SpikeInterface](https://github.com/spikeinterface) -- `pip install spikeinterface`
 * [SpikeForest](https://github.com/flatironinstitute/spikeforest2)
 
-## Install from source
+## Install from PyPI
 
-For now, install in development mode. After cloning this repository:
+```
+pip install --upgrade ephys_nlm
+```
+
+## Install from source (for developers)
+
+After cloning this repository:
 
 ```bash
 cd ephys_nlm
 pip install -e .
-```
 
-Then in subsequent updates:
-
-```bash
+# Then in subsequent updates:
 git pull
 pip install -e .
 ```
@@ -237,6 +240,14 @@ This should produce output similar to the following:
 
 ![screenshot1](doc/screenshot1.png)
 
+## License
+
+Apache-2.0 -- We request that you acknowledge the original authors in any derivative work.
+
 ## Authors
 
-Jeremy Magland, Center for Computational Mathematics, Flatiron Institute
+Jeremy Magland, Center for Computational Mathematics (CCM), Flatiron Institute
+
+## Acknowledgments
+
+Alex Barnett, James Jun, and members of CCM for many useful discussions

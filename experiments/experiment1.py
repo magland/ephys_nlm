@@ -24,16 +24,25 @@ def main():
         sorting_true_path=sorting_true_path
     )
 
-    recording_denoised_path = denoise_recording(recording_path)
+    with ka.config(fr='default_readonly'), hither.config(container=None, cache='default_readwrite'):
+        result = denoise_recording.run(
+            recording_path=recording_path,
+            recording_out_path=hither.File(),
+            sigma_scale_factor=0.9
+        )
+        assert result.success
+        recording_denoised_path = result.outputs.recording_out_path.path_
+    
     test_sort(
         sorter_name=sorter_name,
         recording_path=recording_denoised_path,
         sorting_true_path=sorting_true_path
     )
 
-def denoise_recording(recording_path):
+@hither.function('denoise_recording', '0.1.0-test')
+@hither.output_file('recording_out_path')
+def denoise_recording(recording_path, recording_out_path, sigma_scale_factor=1):
     from spikeforest2_utils import AutoRecordingExtractor
-    import spikeextractors as se
 
     R = AutoRecordingExtractor(recording_path)
 
@@ -42,17 +51,16 @@ def denoise_recording(recording_path):
         block_size_sec=30,
         clip_size=30,
         sigma='auto',
-        sigma_scale_factor=1,
+        sigma_scale_factor=sigma_scale_factor,
         whitening='auto',
         whitening_pctvar=90,
         denom_threshold=30
     )
     R_denoised, runtime_info = ephys_nlm_v1(recording=R, opts=opts, device=None, verbose=2)
 
-    R_denoised_path = register_recording(recording=R_denoised, label='denoised', to=None)
-    return R_denoised_path
+    register_recording(recording=R_denoised, recording_out_path=recording_out_path, label='denoised', to=None)
 
-def register_recording(*, recording, label, to):
+def register_recording(*, recording, recording_out_path, label, to):
     from spikeforest2_utils import MdaRecordingExtractor
     with ka.config(to=to):
         with hither.TemporaryDirectory() as tmpdir:
@@ -65,7 +73,8 @@ def register_recording(*, recording, label, to):
                 geom=np.genfromtxt(ka.load_file(recdir + '/geom.csv'), delimiter=',').tolist()
             )
             obj['self_reference'] = ka.store_object(obj, basename='{}.json'.format(label))
-            return ka.store_object(obj, basename='{}.json'.format(label))
+            with open(recording_out_path, 'w') as f:
+                json.dump(obj, f)
 
 def get_geom_from_recording(recording):
     channel_ids = recording.get_channel_ids()

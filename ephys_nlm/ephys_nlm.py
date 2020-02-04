@@ -118,7 +118,7 @@ class EphysNlmV1NeighborhoodInfo:
 
 
 def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, device: Union[None, str], verbose: int = 1) -> Tuple[OutputRecordingExtractor, EphysNlmV1Info]:
-    """Denoise an ephys recording using non-local means
+    """Denoise an ephys recording using non-local means. The input and output recordings are RecordingExtractors from SpikeInterface.
 
     Parameters
     ----------
@@ -271,7 +271,7 @@ def _estimate_sigma_and_whitening_in_neighborhood(*, traces: np.ndarray, opts: E
     # M x N
     traces_t: torch.tensor = torch.from_numpy(traces).to(device)
     # L x M x T
-    clips_t = extract_clips_t(
+    clips_t = _extract_clips_t(
         traces_t, t_start=0, T_delta=T_delta, T=T, num_clips=L)
     del traces_t
     # L x MT
@@ -412,7 +412,7 @@ def _denoise_neighborhood(*, traces: np.ndarray, opts: EphysNlmV1Opts, sigma: fl
     traces_t = torch.zeros((M, N2), dtype=torch.float32, device=device)
     traces_t[:, :N] = torch.from_numpy(traces).to(device)
     # L x M x T
-    clips_t = extract_clips_t(
+    clips_t = _extract_clips_t(
         traces_t, t_start=0, T_delta=T2, T=T, num_clips=L)
 
     numer_t = torch.zeros((L, M, T), dtype=torch.float32, device=device)
@@ -424,7 +424,7 @@ def _denoise_neighborhood(*, traces: np.ndarray, opts: EphysNlmV1Opts, sigma: fl
             subsample_factor = 10
         else:
             subsample_factor = 1
-        clips2_t = extract_clips_t(
+        clips2_t = _extract_clips_t(
             traces_t, t_start=dt, T_delta=T2, T=T, num_clips=L)
         for aa in range(subsample_factor):
             inds_subsample_t = torch.arange(aa, L, subsample_factor)
@@ -618,7 +618,7 @@ def _denoise_clips_t_B(Xw_t: torch.tensor, Yw_t: torch.tensor, Y_t: torch.tensor
     return numer, denom
 
 
-def extract_clips_t(traces_t: torch.tensor, *, t_start: int, T_delta: int, T: int, num_clips: int) -> torch.tensor:
+def _extract_clips_t(traces_t: torch.tensor, *, t_start: int, T_delta: int, T: int, num_clips: int) -> torch.tensor:
     """Extract clips from a recording, operating on torch tensors, with a given clip size and an increment between clips
 
     Parameters

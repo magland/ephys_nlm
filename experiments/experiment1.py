@@ -14,8 +14,8 @@ def main():
     sorting_true_path = 'sha1://cce42806bcfe86f4f58c51aefb61f2c28a99f6cf/SYNTH_MEAREC_TETRODE/synth_mearec_tetrode_noise10_K10_C4/002_synth.firings_true.json'
     # recording_path = 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise20_K20_C4/001_synth'
     # sorting_true_path = 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise20_K20_C4/001_synth/firings_true.mda'
-    # sorter_name = 'mountainsort4'
-    sorter_name = 'ironclust'
+    sorter_name = 'mountainsort4'
+    # sorter_name = 'ironclust'
     # sorter_name = 'kilosort2'
 
     test_sort(

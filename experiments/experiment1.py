@@ -10,10 +10,10 @@ from ephys_nlm import ephys_nlm_v1, ephys_nlm_v1_opts
 def main():
     os.environ['HITHER_USE_SINGULARITY'] = 'TRUE'
 
-    # recording_path = 'sha1://961f4a641af64dded4821610189f808f0192de4d/SYNTH_MEAREC_TETRODE/synth_mearec_tetrode_noise10_K10_C4/002_synth.json'
-    # sorting_true_path = 'sha1://cce42806bcfe86f4f58c51aefb61f2c28a99f6cf/SYNTH_MEAREC_TETRODE/synth_mearec_tetrode_noise10_K10_C4/002_synth.firings_true.json'
-    recording_path = 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise20_K20_C4/001_synth'
-    sorting_true_path = 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise20_K20_C4/001_synth/firings_true.mda'
+    recording_path = 'sha1://961f4a641af64dded4821610189f808f0192de4d/SYNTH_MEAREC_TETRODE/synth_mearec_tetrode_noise10_K10_C4/002_synth.json'
+    sorting_true_path = 'sha1://cce42806bcfe86f4f58c51aefb61f2c28a99f6cf/SYNTH_MEAREC_TETRODE/synth_mearec_tetrode_noise10_K10_C4/002_synth.firings_true.json'
+    # recording_path = 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise20_K20_C4/001_synth'
+    # sorting_true_path = 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise20_K20_C4/001_synth/firings_true.mda'
     # sorter_name = 'mountainsort4'
     sorter_name = 'ironclust'
     # sorter_name = 'kilosort2'
@@ -31,7 +31,7 @@ def main():
             sigma_scale_factor=0.9
         )
         assert result.success
-        recording_denoised_path = result.outputs.recording_out_path.path_
+        recording_denoised_path = ka.store_file(result.outputs.recording_out_path._path, basename='denoised.json')
     
     test_sort(
         sorter_name=sorter_name,
@@ -39,16 +39,16 @@ def main():
         sorting_true_path=sorting_true_path
     )
 
-@hither.function('denoise_recording', '0.1.0-test')
+@hither.function('denoise_recording', '0.1.0')
 @hither.output_file('recording_out_path')
-def denoise_recording(recording_path, recording_out_path, sigma_scale_factor=1):
+def denoise_recording(recording_path, recording_out_path, sigma_scale_factor=1, block_size_sec=60):
     from spikeforest2_utils import AutoRecordingExtractor
 
     R = AutoRecordingExtractor(recording_path)
 
     opts = ephys_nlm_v1_opts(
         multi_neighborhood=False,
-        block_size_sec=30,
+        block_size_sec=block_size_sec,
         clip_size=30,
         sigma='auto',
         sigma_scale_factor=sigma_scale_factor,

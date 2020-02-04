@@ -11,7 +11,7 @@ Functions
 
     
 `ephys_nlm_v1(recording, *, opts, device, verbose=1)`
-:   Denoise an ephys recording using non-local means
+:   Denoise an ephys recording using non-local means. The input and output recordings are RecordingExtractors from SpikeInterface.
     
     Parameters
     ----------
@@ -56,28 +56,6 @@ Functions
         The percent of variance to retain in the whitening matrix controlling the number of SVD components to keep. The default is 90.
     denom_threshold : float, optional
         A threshold controlling the maximum number of clips to use to denoise each clip. The default is 30. Higher values lead to a slower but more accurate calculation.
-
-    
-`extract_clips_t(traces_t, *, t_start, T_delta, T, num_clips)`
-:   Extract clips from a recording, operating on torch tensors, with a given clip size and an increment between clips
-    
-    Parameters
-    ----------
-    traces_t : torch.tensor
-        The recording tensor (M x T)
-    t_start : int
-        Start timepoint
-    T_delta : int
-        Increment between clips (in timepoints)
-    T : int
-        The clip (or snippet) size
-    num_clips : int
-        Number of clips to extract
-    
-    Returns
-    -------
-    torch.tensor
-        The extracted clips (num_clips x M x T)
 
 Classes
 -------

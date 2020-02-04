@@ -240,6 +240,10 @@ This should produce output similar to the following:
 
 ![screenshot1](doc/screenshot1.png)
 
+## API
+
+[API documentation](doc/api/ephys_nlm/ephys_nlm.md)
+
 ## License
 
 Apache-2.0 -- We request that you acknowledge the original authors in any derivative work.

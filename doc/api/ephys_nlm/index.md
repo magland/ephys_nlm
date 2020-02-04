@@ -1,12 +1,14 @@
-"""ephys_nlm
+Module ephys_nlm
+================
+ephys_nlm
 
 Non-local means denoising of multi-channel electrophysiology timeseries using PyTorch.
 
 Authors: Jeremy Magland, Center for Computational Mathematics, Flatiron Institute
 
 Created January 2019
-"""
 
-from .ephys_nlm import ephys_nlm_v1, ephys_nlm_v1_opts
-
-from . import example_datasets
+Sub-modules
+-----------
+* ephys_nlm.ephys_nlm
+* ephys_nlm.example_datasets

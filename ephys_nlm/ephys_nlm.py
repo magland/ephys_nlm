@@ -27,7 +27,10 @@ def ephys_nlm_v1_opts(
         whitening_pctvar: float = 90,
         denom_threshold: float = 30
 ):
-    """Create options to be passed into ephys_nlm_v1. These options affect the calculation performed, not the environment. So for example, device is not among these options.
+    """Create options to be passed into ephys_nlm_v1.
+    
+    These options affect the calculation performed, not the environment. So for
+    example, device is not among these options.
 
     Parameters
     ----------
@@ -118,7 +121,9 @@ class EphysNlmV1NeighborhoodInfo:
 
 
 def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, device: Union[None, str], verbose: int = 1) -> Tuple[OutputRecordingExtractor, EphysNlmV1Info]:
-    """Denoise an ephys recording using non-local means. The input and output recordings are RecordingExtractors from SpikeInterface.
+    """Denoise an ephys recording using non-local means.
+    
+    The input and output recordings are RecordingExtractors from SpikeInterface.
 
     Parameters
     ----------
@@ -126,8 +131,10 @@ def ephys_nlm_v1(recording: se.RecordingExtractor, *, opts: EphysNlmV1Opts, devi
         The ephys recording to denoise (see SpikeInterface)
     opts : EphysNlmV1Opts
         Options created using EphysNlmV1Opts(...)
-    device : str
-        Either cuda or cpu (cuda is highly recommended, but you need to have CUDA/PyTorch working on your system)
+    device : Union[str, None]
+        Either cuda or cpu (cuda is highly recommended, but you need to have
+        CUDA/PyTorch working on your system). If None, then the EPHYS_NLM_DEVICE
+        environment variable will be used.
     verbose : int, optional
         Verbosity level, by default 1
 

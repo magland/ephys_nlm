@@ -11,7 +11,9 @@ Functions
 
     
 `ephys_nlm_v1(recording, *, opts, device, verbose=1)`
-:   Denoise an ephys recording using non-local means. The input and output recordings are RecordingExtractors from SpikeInterface.
+:   Denoise an ephys recording using non-local means.
+    
+    The input and output recordings are RecordingExtractors from SpikeInterface.
     
     Parameters
     ----------
@@ -19,8 +21,10 @@ Functions
         The ephys recording to denoise (see SpikeInterface)
     opts : EphysNlmV1Opts
         Options created using EphysNlmV1Opts(...)
-    device : str
-        Either cuda or cpu (cuda is highly recommended, but you need to have CUDA/PyTorch working on your system)
+    device : Union[str, None]
+        Either cuda or cpu (cuda is highly recommended, but you need to have
+        CUDA/PyTorch working on your system). If None, then the EPHYS_NLM_DEVICE
+        environment variable will be used.
     verbose : int, optional
         Verbosity level, by default 1
     
@@ -32,7 +36,10 @@ Functions
 
     
 `ephys_nlm_v1_opts(multi_neighborhood=False, neighborhood_adjacency_radius=None, block_size=None, block_size_sec=30, clip_size=30, sigma='auto', sigma_scale_factor=1, whitening='auto', whitening_pctvar=90, denom_threshold=30)`
-:   Create options to be passed into ephys_nlm_v1. These options affect the calculation performed, not the environment. So for example, device is not among these options.
+:   Create options to be passed into ephys_nlm_v1.
+    
+    These options affect the calculation performed, not the environment. So for
+    example, device is not among these options.
     
     Parameters
     ----------

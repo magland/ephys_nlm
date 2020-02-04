@@ -1,4 +1,4 @@
 [MASTER]
 generated-members=numpy.* ,torch.*
-disable=invalid-name,line-too-long,multiple-statements,import-outside-toplevel,too-many-locals,too-many-statements,protected-access,too-few-public-methods,missing-module-docstring,W0511,missing-class-docstring,too-many-arguments,too-many-instance-attributes,missing-function-docstring,arguments-out-of-order,duplicate-code
+disable=invalid-name,line-too-long,multiple-statements,import-outside-toplevel,too-many-locals,too-many-statements,protected-access,too-few-public-methods,missing-module-docstring,W0511,missing-class-docstring,too-many-arguments,too-many-instance-attributes,missing-function-docstring,arguments-out-of-order,duplicate-code,trailing-whitespace
 extension-pkg-whitelist=numpy

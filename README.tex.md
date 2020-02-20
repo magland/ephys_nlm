@@ -29,7 +29,7 @@ $$\tilde{v}_i = \frac{1}{\sum_j w(v_i, u_j)}\sum_j w(v_i, u_j) u_j$$
 where $v_i$ and $u_j$ are $MT$-dimensional vectors representing clips with $T$ timepoints,
 $\tilde{v}_i$ is the denoised vector/clip,
 
-$$w(i, j) = e^{-\|v_i-v_j\|_A^2/\sigma^2}$$
+$$w(v, u) = e^{-\|v-u\|_A^2/\sigma^2}$$
 
 is a weighting function, and the summation is over all $N-T$ clips in the entire
 recording (including all translations). Thus, each of the $2N/T$

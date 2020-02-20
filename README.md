@@ -29,7 +29,7 @@ computation time were not a concern, we would ideally denoise each half-overlapp
 where <img src="/tex/9f7365802167fff585175c1750674d42.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=14.15524440000002pt/> and <img src="/tex/5db0aab2d6e54e70d087c4b6ae005a7a.svg?invert_in_darkmode&sanitize=true" align=middle width=15.514781699999991pt height=14.15524440000002pt/> are <img src="/tex/5824cf8e74837d9e47e5d2a445bbd200.svg?invert_in_darkmode&sanitize=true" align=middle width=29.629030199999992pt height=22.465723500000017pt/>-dimensional vectors representing clips with <img src="/tex/2f118ee06d05f3c2d98361d9c30e38ce.svg?invert_in_darkmode&sanitize=true" align=middle width=11.889314249999991pt height=22.465723500000017pt/> timepoints,
 <img src="/tex/02424da7f1a198554aba257b04b7f68f.svg?invert_in_darkmode&sanitize=true" align=middle width=12.61896569999999pt height=21.95701200000001pt/> is the denoised vector/clip,
 
-<p align="center"><img src="/tex/4bbd3c88773cd63b2ed19dc1ad35076d.svg?invert_in_darkmode&sanitize=true" align=middle width=163.4625762pt height=21.1544223pt/></p>
+<p align="center"><img src="/tex/c640b307f25e041a65d3ddca44fbb7d8.svg?invert_in_darkmode&sanitize=true" align=middle width=158.3181171pt height=21.1544223pt/></p>
 
 is a weighting function, and the summation is over all <img src="/tex/edb0013d0d98003d4407f974610d85fd.svg?invert_in_darkmode&sanitize=true" align=middle width=46.98047309999998pt height=22.465723500000017pt/> clips in the entire
 recording (including all translations). Thus, each of the <img src="/tex/e908dc05eda31fa627940844fffb509c.svg?invert_in_darkmode&sanitize=true" align=middle width=41.95782194999999pt height=24.65753399999998pt/>

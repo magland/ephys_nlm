@@ -47,7 +47,7 @@ class OutputRecordingExtractor(se.RecordingExtractor):
         """
         return self._base_recording.get_sampling_frequency()
 
-    def get_traces(self, channel_ids=None, start_frame=None, end_frame=None):
+    def get_traces(self, channel_ids=None, start_frame=None, end_frame=None, return_scaled=False):
         if start_frame is None:
             start_frame = 0
         if end_frame is None:
